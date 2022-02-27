@@ -21,25 +21,33 @@
 // print the time he gets for drinking, separated by a single space. It is preferable that Homer drinks as
 // little beer as possible
 
+// Adding memoization
+#define SIZE 10000 // Big enough to old all subproblem solutions
+
 void solve(int m, int n , int t) {
     // Solving the actual problem
     // If can't be solved for t, solve for t-1.
     int result, i;
-    result = solve_for_t(m, n , t);
+    int memo[SIZE];
+    for (i = 0; i <= t; i++) {
+        // Using -2 to indicate solution has not been computed yet
+        memo[i] = -2;
+    }
+    result = solve_for_t_memoized(m, n , t, memo);
     if (result >= 0) {
         printf("%d\n", result);
     }else {
         i = t - 1;
-        result = solve_for_t(m, n, i);
+        result = solve_for_t_memoized(m, n, i, memo);
         while (result == -1) {
             i--;
-            result = solve_for_t(m, n, i);
+            result = solve_for_t_memoized(m, n, i, memo);
         }
         printf("%d %d\n", result, t - i);
     }
 }
 
 int main() { 
-    solve(4, 2, 22);
+    solve(4, 2, 88);
     return 0;
 }
