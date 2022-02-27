@@ -5,6 +5,8 @@
 // UVa problem 10465
 // https://onlinejudge.org/external/104/10465.pdf
 //
+// Algorithmic Programming - D. Zingaro
+//
 // Homer Simpson, a very smart guy, likes eating Krusty-burgers. It takes
 // Homer m minutes to eat a Krusty-burger. However, there’s a new type
 // of burger in Apu’s Kwik-e-Mart. Homer likes those too. It takes him n
@@ -24,7 +26,7 @@
 // Adding memoization
 #define SIZE 10000 // Big enough to old all subproblem solutions
 
-void solve(int m, int n , int t) {
+void solve_recursive(int m, int n , int t) {
     // Solving the actual problem
     // If can't be solved for t, solve for t-1.
     int result, i;
@@ -47,7 +49,48 @@ void solve(int m, int n , int t) {
     }
 }
 
+void solve_dynamic_prog(int m, int n, int t) {
+    // Bottom-up approach
+    // Computing all subproblems in correct order
+    int result, i, first, second;
+    int dp[SIZE];
+    dp[0] = 0;
+    for (i = 1; i <= t; i++){
+        // Solving for all subproblems
+        if (i >= m) {
+            first = dp[i - m];
+        } else {
+            first = -1;
+        }
+        if (i >= n) {
+            second = dp[i - n];
+        } else {
+            second = -1;
+        }
+        if (first == -1 && second == -1) {
+            dp[i] = -1;
+        } else {
+            dp[i] = max(first, second) + 1;
+        }
+
+    }
+
+    // Now everything is computed, the logic is the same
+    if (result >= 0) {
+        printf("%d\n", result);
+    }else {
+        i = t - 1;
+        result = dp[i];
+        while (result == -1) {
+            i--;
+            result = dp[i];
+        }
+        printf("%d %d\n", result, t - i);
+    }
+}
+
 int main() { 
-    solve(4, 2, 88);
+    solve_recursive(4, 2, 88);
+    solve_dynamic_prog(4, 2, 88);
     return 0;
 }
